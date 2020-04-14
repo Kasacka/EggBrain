@@ -1,6 +1,6 @@
 using System.Linq;
 
-namespace neural
+namespace EggBrain
 {
     internal static class Maths
     {
@@ -13,8 +13,17 @@ namespace neural
             return result;
         }
 
-        public static double[] Difference(double[] vector1, double[] vector2) =>
-            vector1.Select((value, index) => value - vector2[index]).ToArray();
+        public static void Difference(double[] vector1, double[] vector2, double[] result)
+        {
+            for (var index = 0; index < vector1.Length; ++index)
+                result[index] = vector1[index] - vector2[index];
+        }
+
+        public static void Multiply(double[] vector1, double[] vector2, double[] result)
+        {
+            for (var index = 0; index < vector1.Length; ++index)
+                result[index] = vector1[index] * vector2[index];
+        }
   
         public static double[] Multiply(double[] vector1, double[] vector2) =>
             vector1.Select((value, index) => value * vector2[index]).ToArray();

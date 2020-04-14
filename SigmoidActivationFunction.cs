@@ -1,6 +1,6 @@
 using System;
 
-namespace neural
+namespace EggBrain
 {
     public sealed class SigmoidActivationFunction : IActivationFunction
     {

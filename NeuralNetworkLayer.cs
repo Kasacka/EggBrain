@@ -1,4 +1,4 @@
-namespace neural
+namespace EggBrain
 {
     public sealed class NeuralNetworkLayer
     {
