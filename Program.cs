@@ -14,16 +14,6 @@ namespace neural
                 new NeuralNetworkLayer(5, sigmoid),
                 new NeuralNetworkLayer(1, sigmoid)
             });
-            for (var i = 0; i < 200000; ++i)
-                Train(network);
-            
-            Test(network, false, false);
-            Test(network, false, true);
-            Test(network, true, false);
-            Test(network, true, true);
-
-            //var result = network.Test(new double[] { 1, 1 });
-            //Console.WriteLine(string.Join("   ", result));
         }
 
         private static void Test(NeuralNetwork network, bool x, bool y)

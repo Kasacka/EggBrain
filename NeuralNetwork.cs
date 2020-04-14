@@ -24,12 +24,9 @@ namespace neural
 
         public void Train(double[] inputs, double[] expectedOutputs)
         {
-            //Console.WriteLine("INPUTS: " + string.Join("   ", inputs));
             Array.Copy(inputs, 0, layerInputs[0], 0, inputs.Length);
-            //Console.WriteLine("INPUTS: " + string.Join("   ", layerInputs[0]));
             for (var layerIndex = 0; layerIndex < Layers; ++layerIndex)
                 PropagateForward(layerIndex);
-            //double[][] previousWeights = null;
             for (var layerIndex = Layers - 1; layerIndex >= 0; --layerIndex)
                 PropagateBackward(layerIndex, expectedOutputs);
         }
@@ -44,19 +41,13 @@ namespace neural
 
         private void PropagateForward(int layerIndex)
         {            
-            //Console.WriteLine("Layer Index: " + layerIndex);
             var function = layers[layerIndex].ActivationFunction;
-            //Console.WriteLine(function);
             layerOutputs[layerIndex] = layerInputs[layerIndex].Select(function.Perform).ToArray();
-            //Console.WriteLine(function);
-            //Console.WriteLine("Inputs: " + string.Join(",", layerInputs[layerIndex]));
-            //Console.WriteLine("Inputs: " + string.Join(",", layerOutputs[layerIndex]));
-            //Environment.Exit(0);
             if (layerIndex < Layers - 1)
                 layerInputs[layerIndex + 1] = synapses[layerIndex] * layerOutputs[layerIndex];
         }
 
-        private void PropagateBackward(int layerIndex, double[] errors /*, double[][] previousWeights*/)
+        private void PropagateBackward(int layerIndex, double[] errors)
         {
             if (layerIndex == 0)
                 return;
@@ -68,12 +59,9 @@ namespace neural
             if (layerIndex == Layers - 1)
             {
                 differences = Maths.Difference(outputs, errors);
-                //Console.WriteLine(string.Join("  ", differences));
-                //Environment.Exit(0);
             }
             else
             {
-                //Console.WriteLine(4);
                 var ll = new List<double>();
                 for (var x = 0; x < layers[layerIndex].NeuronCount; ++x) {
                     var s = 0d;
@@ -93,9 +81,6 @@ namespace neural
             for (var x = 0; x < deltaWeights.Length; ++x)
                 for (var y = 0; y < deltaWeights[x].Length; ++y)
                     synapses[layerIndex - 1][x, y] += deltaWeights[x][y];
-            
-
-            //return weights;
         }
 
         private void InitializeLayers()
