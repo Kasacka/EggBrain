@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 
 namespace EggBrain
@@ -23,6 +24,12 @@ namespace EggBrain
         {
             for (var index = 0; index < vector1.Length; ++index)
                 result[index] = vector1[index] * vector2[index];
+        }
+
+        public static void Map(double[] vector, Func<double, double> mapper, double[] result) 
+        {
+            for (var index = 0; index < vector.Length; ++index)
+                result[index] = mapper(vector[index]);
         }
   
         public static double[] Multiply(double[] vector1, double[] vector2) =>
