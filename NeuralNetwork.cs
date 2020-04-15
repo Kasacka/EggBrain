@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace EggBrain
@@ -15,11 +16,10 @@ namespace EggBrain
         public NeuralNetwork(NeuralNetworkSettings settings) 
         {
             this.settings = settings;
-            Layers = settings.Layers.ToArray();
-            layerInputs = CreateLayers(Layers);
-            layerOutputs = CreateLayers(Layers);
-            deltas = CreateLayers(Layers);
-            synapses = CreateSynapses(Layers);
+            layerInputs = CreateLayers();
+            layerOutputs = CreateLayers();
+            deltas = CreateLayers();
+            synapses = CreateSynapses();
         }
 
         public void Train(double[] inputs, double[] expectedOutputs)
@@ -39,62 +39,62 @@ namespace EggBrain
 
         private void PropagateForward(int layerIndex)
         {            
-            Activate(layerIndex);
+            Maths.Map(layerInputs[layerIndex], Layers[layerIndex].ActivationFunction.Perform, layerOutputs[layerIndex]);
             if (layerIndex < LayerCount - 1)
                 layerInputs[layerIndex + 1] = Maths.DotProduct(synapses[layerIndex], layerOutputs[layerIndex]);
-        }
-
-        private void Activate(int layerIndex)
-        {
-            var function = Layers[layerIndex].ActivationFunction;
-            Maths.Map(layerInputs[layerIndex], function.Perform, layerOutputs[layerIndex]);
         }
 
         private void PropagateBackward(int layerIndex, double[] errors)
         {
             var derivations = layerInputs[layerIndex].Select(Layers[layerIndex].ActivationFunction.PerformDerivation).ToArray();
-            var differences = new double[Layers[layerIndex].NeuronCount];
-            if (layerIndex == LayerCount - 1)
-            {
+            var differences = new double[NeuronCount(layerIndex)];
+            if (IsLastLayer(layerIndex))
                 Maths.Difference(layerOutputs[layerIndex], errors, differences);
-            }
             else
-            {
-                for (var x = 0; x < Layers[layerIndex].NeuronCount; ++x) {
-                    differences[x] = deltas[layerIndex + 1]
-                        .Select((h, y) => h * synapses[layerIndex][x, y])
-                        .Sum();
-                }
-            }
+                NewMethod(layerIndex, differences);
 
-            deltas[layerIndex] = new double[Layers[layerIndex].NeuronCount];
+            deltas[layerIndex] = new double[NeuronCount(layerIndex)];
             Maths.Multiply(differences, derivations, deltas[layerIndex]);
-            var deltaWeights = layerOutputs[layerIndex - 1]
-                .Select(output => deltas[layerIndex].Select(d => d * output * (-1) * settings.LearningRate).ToArray())
-                .ToArray();
-            
-            Matrix.Map(synapses[layerIndex - 1], (x, y, current) => current + deltaWeights[x][y]);
+            var deltaWeights = new double[NeuronCount(layerIndex - 1), NeuronCount(layerIndex)];
+            Matrix.Map(synapses[layerIndex - 1], (x, y, current) => current + -deltas[layerIndex][y] * layerOutputs[layerIndex - 1][x] * LearningRate);
         }
 
-        private static double[][] CreateLayers(NeuralNetworkLayer[] layers) => 
-            layers.Select(layer => new double[layer.NeuronCount]).ToArray();
+        private void NewMethod(int layerIndex, double[] differences)
+        {
+            for (var x = 0; x < Layers[layerIndex].NeuronCount; ++x)
+            {
+                differences[x] = deltas[layerIndex + 1]
+                    .Select((h, y) => h * synapses[layerIndex][x, y])
+                    .Sum();
+            }
+        }
 
-        private static double[][,] CreateSynapses(NeuralNetworkLayer[] layers) =>
-            layers.Skip(1).Select((layer, index) => CreateSynapses(layers[index].NeuronCount, layer.NeuronCount)).ToArray();
+        private double[][] CreateLayers() => 
+            Layers.Select(layer => new double[layer.NeuronCount]).ToArray();
 
-        private static double[,] CreateSynapses(int inNeurons, int outNeurons)
+        private double[][,] CreateSynapses() =>
+            Layers.Skip(1).Select((layer, index) => CreateSynapses(NeuronCount(index), layer.NeuronCount)).ToArray();
+
+        private double[,] CreateSynapses(int inNeurons, int outNeurons)
         {
             var result = new double[inNeurons, outNeurons];
             Matrix.Map(result, (x, y) => random.NextDouble());
             return result;
         }
 
-        private NeuralNetworkLayer[] Layers { get; }
+        private IReadOnlyList<NeuralNetworkLayer> Layers =>
+            settings.Layers;
 
         private int LayerCount => 
-            Layers.Length;
+            settings.Layers.Count;
+
+        private double LearningRate =>
+            settings.LearningRate;
 
         private int NeuronCount(int layerIndex) => 
             Layers[layerIndex].NeuronCount;
+
+        private bool IsLastLayer(int layerIndex) =>
+            layerIndex == LayerCount - 1;
     }
 }

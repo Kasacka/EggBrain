@@ -12,6 +12,6 @@ namespace EggBrain
         }
 
         public double LearningRate { get; }
-        public IEnumerable<NeuralNetworkLayer> Layers { get; }
+        public IReadOnlyList<NeuralNetworkLayer> Layers { get; }
     }
 }
