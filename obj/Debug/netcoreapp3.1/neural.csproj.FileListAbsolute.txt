@@ -8,3 +8,16 @@
 /Users/joelegger/Desktop/phytoni/neural/bin/Debug/netcoreapp3.1/neural.pdb
 /Users/joelegger/Desktop/phytoni/neural/obj/Debug/netcoreapp3.1/neural.dll
 /Users/joelegger/Desktop/phytoni/neural/obj/Debug/netcoreapp3.1/neural.pdb
+C:\Development\Experimental\EggBrain\bin\Debug\netcoreapp3.1\neural.exe
+C:\Development\Experimental\EggBrain\bin\Debug\netcoreapp3.1\neural.deps.json
+C:\Development\Experimental\EggBrain\bin\Debug\netcoreapp3.1\neural.runtimeconfig.json
+C:\Development\Experimental\EggBrain\bin\Debug\netcoreapp3.1\neural.runtimeconfig.dev.json
+C:\Development\Experimental\EggBrain\bin\Debug\netcoreapp3.1\neural.dll
+C:\Development\Experimental\EggBrain\bin\Debug\netcoreapp3.1\neural.pdb
+C:\Development\Experimental\EggBrain\obj\Debug\netcoreapp3.1\neural.csprojAssemblyReference.cache
+C:\Development\Experimental\EggBrain\obj\Debug\netcoreapp3.1\neural.csproj.CoreCompileInputs.cache
+C:\Development\Experimental\EggBrain\obj\Debug\netcoreapp3.1\neural.AssemblyInfoInputs.cache
+C:\Development\Experimental\EggBrain\obj\Debug\netcoreapp3.1\neural.AssemblyInfo.cs
+C:\Development\Experimental\EggBrain\obj\Debug\netcoreapp3.1\neural.dll
+C:\Development\Experimental\EggBrain\obj\Debug\netcoreapp3.1\neural.pdb
+C:\Development\Experimental\EggBrain\obj\Debug\netcoreapp3.1\neural.genruntimeconfig.cache

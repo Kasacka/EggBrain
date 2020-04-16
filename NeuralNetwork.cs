@@ -6,7 +6,6 @@ namespace EggBrain
 {
     public sealed class NeuralNetwork
     {
-        private static readonly Random random = new Random();
         private readonly NeuralNetworkSettings settings;
         private readonly double[][] layerInputs;
         private readonly double[][] layerOutputs;
@@ -16,10 +15,10 @@ namespace EggBrain
         public NeuralNetwork(NeuralNetworkSettings settings) 
         {
             this.settings = settings;
-            layerInputs = CreateLayers();
-            layerOutputs = CreateLayers();
-            deltas = CreateLayers();
-            synapses = CreateSynapses();
+            layerInputs = NeuralNetworkArrayFactory.CreateLayers(Layers);
+            layerOutputs = NeuralNetworkArrayFactory.CreateLayers(Layers);
+            deltas = NeuralNetworkArrayFactory.CreateLayers(Layers);
+            synapses = NeuralNetworkArrayFactory.CreateSynapses(Layers);
         }
 
         public void Train(double[] inputs, double[] expectedOutputs)
@@ -44,49 +43,37 @@ namespace EggBrain
                 layerInputs[layerIndex + 1] = Maths.DotProduct(synapses[layerIndex], layerOutputs[layerIndex]);
         }
 
-        private void PropagateBackward(int layerIndex, double[] errors)
+        private void PropagateBackward(int layerIndex, double[] expectedOutputs)
         {
             var derivations = layerInputs[layerIndex].Select(Layers[layerIndex].ActivationFunction.PerformDerivation).ToArray();
-            var differences = new double[NeuronCount(layerIndex)];
+            double[] differences = null;
             if (IsLastLayer(layerIndex))
-                Maths.Difference(layerOutputs[layerIndex], errors, differences);
+                differences = GetLastLayerDifferences(expectedOutputs);
             else
-                NewMethod(layerIndex, differences);
-
+                differences = GetHiddenLayerDifferences(layerIndex);
             deltas[layerIndex] = new double[NeuronCount(layerIndex)];
             Maths.Multiply(differences, derivations, deltas[layerIndex]);
-            var deltaWeights = new double[NeuronCount(layerIndex - 1), NeuronCount(layerIndex)];
             Matrix.Map(synapses[layerIndex - 1], (x, y, current) => current + -deltas[layerIndex][y] * layerOutputs[layerIndex - 1][x] * LearningRate);
         }
 
-        private void NewMethod(int layerIndex, double[] differences)
+        private double[] GetLastLayerDifferences(double[] expectedOutputs)
         {
-            for (var x = 0; x < Layers[layerIndex].NeuronCount; ++x)
-            {
-                differences[x] = deltas[layerIndex + 1]
-                    .Select((h, y) => h * synapses[layerIndex][x, y])
-                    .Sum();
-            }
+            var differences = new double[NeuronCount(LayerCount - 1)];
+            Maths.Difference(layerOutputs[LayerCount - 1], expectedOutputs, differences);
+            return differences;
         }
 
-        private double[][] CreateLayers() => 
-            Layers.Select(layer => new double[layer.NeuronCount]).ToArray();
-
-        private double[][,] CreateSynapses() =>
-            Layers.Skip(1).Select((layer, index) => CreateSynapses(NeuronCount(index), layer.NeuronCount)).ToArray();
-
-        private double[,] CreateSynapses(int inNeurons, int outNeurons)
-        {
-            var result = new double[inNeurons, outNeurons];
-            Matrix.Map(result, (x, y) => random.NextDouble());
-            return result;
-        }
+        private double[] GetHiddenLayerDifferences(int layerIndex) => 
+            Enumerable.Range(1, NeuronCount(layerIndex))
+                .Select((_, x) => deltas[layerIndex + 1]
+                    .Select((delta, y) => delta * synapses[layerIndex][x, y])
+                    .Sum()).ToArray();
 
         private IReadOnlyList<NeuralNetworkLayer> Layers =>
             settings.Layers;
 
-        private int LayerCount => 
-            settings.Layers.Count;
+        private int LayerCount =>
+            Layers.Count;
 
         private double LearningRate =>
             settings.LearningRate;

@@ -15,14 +15,18 @@ namespace EggBrain
                 new NeuralNetworkLayer(1, sigmoid)
             });
             var network = new NeuralNetwork(settings);
-            for (var i = 0; i < 20000; ++i)
-            Train(network);
-            Test(network, true, false);Test(network, false, false);Test(network, true, true);Test(network, false, true);
+            for (var i = 0; i < 5000000; ++i)
+                Train(network);
+            Test(network, true, false);
+            Test(network, false, false);
+            Test(network, true, true);
+            Test(network, false, true);
         }
 
         private static void Test(NeuralNetwork network, bool x, bool y)
         {
             var res = network.Test(new[] { x ? 1d : 0d, y ? 1d : 0d })[0];
+            Console.WriteLine((x ? 1d : 0d) + " XOR " + (y ? 1d : 0d) + " = " + res);
             Console.WriteLine(x + " XOR " + y + " = " + (res > 0.5d));
         }
 
