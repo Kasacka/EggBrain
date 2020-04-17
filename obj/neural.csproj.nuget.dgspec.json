@@ -1,25 +1,28 @@
 {
   "format": 1,
   "restore": {
-    "/Users/joelegger/Desktop/phytoni/neural/neural.csproj": {}
+    "C:\\Development\\Experimental\\EggBrain\\neural.csproj": {}
   },
   "projects": {
-    "/Users/joelegger/Desktop/phytoni/neural/neural.csproj": {
+    "C:\\Development\\Experimental\\EggBrain\\neural.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/joelegger/Desktop/phytoni/neural/neural.csproj",
+        "projectUniqueName": "C:\\Development\\Experimental\\EggBrain\\neural.csproj",
         "projectName": "neural",
-        "projectPath": "/Users/joelegger/Desktop/phytoni/neural/neural.csproj",
-        "packagesPath": "/Users/joelegger/.nuget/packages/",
-        "outputPath": "/Users/joelegger/Desktop/phytoni/neural/obj/",
+        "projectPath": "C:\\Development\\Experimental\\EggBrain\\neural.csproj",
+        "packagesPath": "C:\\Users\\eggerj\\.nuget\\packages\\",
+        "outputPath": "C:\\Development\\Experimental\\EggBrain\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/joelegger/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\eggerj\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.1"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "O:\\NuGet\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -35,6 +38,20 @@
       },
       "frameworks": {
         "netcoreapp3.1": {
+          "dependencies": {
+            "Microsoft.NET.Test.Sdk": {
+              "target": "Package",
+              "version": "[15.3.0, )"
+            },
+            "xunit": {
+              "target": "Package",
+              "version": "[2.3.1, )"
+            },
+            "xunit.runner.visualstudio": {
+              "target": "Package",
+              "version": "[2.3.1, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -50,7 +67,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/3.1.102/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.201\\RuntimeIdentifierGraph.json"
         }
       }
     }

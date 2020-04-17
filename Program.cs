@@ -10,12 +10,12 @@ namespace EggBrain
         {
             var sigmoid = new SigmoidActivationFunction();
             var settings = new NeuralNetworkSettings(0.1, new[] {
-                new NeuralNetworkLayer(2, new LinearActivationFunction()),
-                new NeuralNetworkLayer(5, sigmoid),
-                new NeuralNetworkLayer(1, sigmoid)
+                new NeuralNetworkLayerSettings(2, new LinearActivationFunction()),
+                new NeuralNetworkLayerSettings(5, sigmoid),
+                new NeuralNetworkLayerSettings(1, sigmoid)
             });
             var network = new NeuralNetwork(settings);
-            for (var i = 0; i < 5000000; ++i)
+            for (var i = 0; i < 500000; ++i)
                 Train(network);
             Test(network, true, false);
             Test(network, false, false);

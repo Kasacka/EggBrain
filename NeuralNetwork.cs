@@ -14,6 +14,7 @@ namespace EggBrain
 
         public NeuralNetwork(NeuralNetworkSettings settings) 
         {
+            Guard.NotNull(settings, nameof(settings));
             this.settings = settings;
             layerInputs = NeuralNetworkArrayFactory.CreateLayers(Layers);
             layerOutputs = NeuralNetworkArrayFactory.CreateLayers(Layers);
@@ -23,17 +24,34 @@ namespace EggBrain
 
         public void Train(double[] inputs, double[] expectedOutputs)
         {
+            Guard.NotNull(inputs, nameof(inputs));
+            Guard.NotNull(expectedOutputs, nameof(expectedOutputs));
+            Guard.HasLength(inputs, Layers.First().NeuronCount, "Invalid count of input values");
+            Guard.HasLength(expectedOutputs, Layers.Last().NeuronCount, "Invalid count of expected output values");
             Test(inputs);
-            for (var layerIndex = LayerCount - 1; layerIndex > 0; --layerIndex)
-                PropagateBackward(layerIndex, expectedOutputs);
+            PropagateForward();
+            PropagateBackward(expectedOutputs);
         }
 
         public double[] Test(double[] inputs)
         {
-            Array.Copy(inputs, 0, layerInputs[0], 0, inputs.Length);
+            Guard.NotNull(inputs, nameof(inputs));
+            Guard.HasLength(inputs, Layers.First().NeuronCount, "Invalid count of input values");
+            Array.Copy(inputs, 0, layerInputs.First(), 0, inputs.Length);
+            PropagateForward();
+            return layerOutputs.Last().ToArray();
+        }
+
+        private void PropagateForward()
+        {
             for (var layerIndex = 0; layerIndex < LayerCount; ++layerIndex)
                 PropagateForward(layerIndex);
-            return layerOutputs[LayerCount - 1].ToArray();
+        }
+
+        private void PropagateBackward(double[] expectedOutputs)
+        {
+            for (var layerIndex = LayerCount - 1; layerIndex > 0; --layerIndex)
+                PropagateBackward(layerIndex, expectedOutputs);
         }
 
         private void PropagateForward(int layerIndex)
@@ -69,7 +87,7 @@ namespace EggBrain
                     .Select((delta, y) => delta * synapses[layerIndex][x, y])
                     .Sum()).ToArray();
 
-        private IReadOnlyList<NeuralNetworkLayer> Layers =>
+        private IReadOnlyList<NeuralNetworkLayerSettings> Layers =>
             settings.Layers;
 
         private int LayerCount =>
